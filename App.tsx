@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput, Alert } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
-const Stack = createStackNavigator();
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput, Alert, ScrollView } from 'react-native';
 
 interface MenuItem {
   id: string;
@@ -14,48 +10,8 @@ interface MenuItem {
 
 const COURSES = ['Starters', 'Mains', 'Desserts'];
 
-function HomeScreen({ route, navigation }: any) {
-  const menuItems = route.params?.menuItems || [];
-
-  const groupedMenu = COURSES.map(course => ({
-    course,
-    items: menuItems.filter((item: MenuItem) => item.course === course)
-  }));
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Christoffel's Menu</Text>
-      <Text style={styles.totalItems}>Total Items: {menuItems.length}</Text>
-      
-      <FlatList
-        data={groupedMenu}
-        keyExtractor={(item) => item.course}
-        renderItem={({ item }) => (
-          <View style={styles.courseSection}>
-            <Text style={styles.courseTitle}>{item.course}</Text>
-            {item.items.map((menuItem: MenuItem) => (
-              <View key={menuItem.id} style={styles.menuItem}>
-                <Text style={styles.itemName}>{menuItem.name}</Text>
-                <Text style={styles.itemPrice}>${menuItem.price.toFixed(2)}</Text>
-              </View>
-            ))}
-          </View>
-        )}
-      />
-      
-      <TouchableOpacity 
-        style={styles.manageButton}
-        onPress={() => navigation.navigate('ManageMenu', { menuItems })}
-      >
-        <Text style={styles.manageButtonText}>Manage Menu</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-function ManageMenuScreen({ route, navigation }: any) {
-  const initialItems = route.params?.menuItems || [];
-  const [menuItems, setMenuItems] = useState<MenuItem[]>(initialItems);
+export default function App() {
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [itemName, setItemName] = useState('');
   const [itemPrice, setItemPrice] = useState('');
   const [selectedCourse, setSelectedCourse] = useState('');
@@ -79,9 +35,15 @@ function ManageMenuScreen({ route, navigation }: any) {
     setSelectedCourse('');
   };
 
+  const groupedMenu = COURSES.map(course => ({
+    course,
+    items: menuItems.filter((item: MenuItem) => item.course === course)
+  }));
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Christoffel's Menu</Text>
+      <Text style={styles.totalItems}>Total Items: {menuItems.length}</Text>
       
       <View style={styles.form}>
         <TextInput
@@ -99,7 +61,6 @@ function ManageMenuScreen({ route, navigation }: any) {
           keyboardType="numeric"
         />
         
-        <Text style={styles.label}>Select Course:</Text>
         <View style={styles.courseButtons}>
           {COURSES.map((course) => (
             <TouchableOpacity
@@ -123,38 +84,20 @@ function ManageMenuScreen({ route, navigation }: any) {
         <TouchableOpacity style={styles.addButton} onPress={addMenuItem}>
           <Text style={styles.addButtonText}>Add to Menu</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.saveButton}
-          onPress={() => navigation.navigate('Home', { menuItems })}
-        >
-          <Text style={styles.saveButtonText}>Save & View Menu</Text>
-        </TouchableOpacity>
       </View>
-
-      <FlatList
-        data={menuItems}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.menuItem}>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <Text style={styles.itemCourse}>{item.course}</Text>
-            <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
-          </View>
-        )}
-      />
-    </View>
-  );
-}
-
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} options={{ title: "Chef's Menu" }} />
-        <Stack.Screen name="ManageMenu" component={ManageMenuScreen} options={{ title: "Manage Menu" }} />
-      </Stack.Navigator>
-    </NavigationContainer>
+      
+      {groupedMenu.map((section) => (
+        <View key={section.course} style={styles.courseSection}>
+          <Text style={styles.courseTitle}>{section.course}</Text>
+          {section.items.map((menuItem: MenuItem) => (
+            <View key={menuItem.id} style={styles.menuItem}>
+              <Text style={styles.itemName}>{menuItem.name}</Text>
+              <Text style={styles.itemPrice}>${menuItem.price.toFixed(2)}</Text>
+            </View>
+          ))}
+        </View>
+      ))}
+    </ScrollView>
   );
 }
 
@@ -193,12 +136,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 10,
-    color: '#2c3e50',
-  },
   courseButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -234,31 +171,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  menuItem: {
-    backgroundColor: 'white',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  itemName: {
-    fontSize: 16,
-    fontWeight: '600',
-    flex: 2,
-  },
-  itemCourse: {
-    fontSize: 14,
-    color: '#7f8c8d',
-    flex: 1,
-    textAlign: 'center',
-  },
-  itemPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#27ae60',
-  },
   courseSection: {
     backgroundColor: 'white',
     marginBottom: 15,
@@ -274,28 +186,23 @@ const styles = StyleSheet.create({
     borderBottomColor: '#3498db',
     paddingBottom: 5,
   },
-  manageButton: {
-    backgroundColor: '#3498db',
-    padding: 15,
+  menuItem: {
+    backgroundColor: '#f8f9fa',
+    padding: 12,
     borderRadius: 8,
+    marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 10,
   },
-  manageButtonText: {
-    color: 'white',
+  itemName: {
+    fontSize: 16,
+    fontWeight: '600',
+    flex: 1,
+  },
+  itemPrice: {
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  saveButton: {
-    backgroundColor: '#e74c3c',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  saveButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: '#27ae60',
   },
 });
