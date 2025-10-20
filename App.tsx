@@ -25,6 +25,7 @@ function HomeScreen({ route, navigation }: any) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Christoffel's Menu</Text>
+      <Text style={styles.totalItems}>Total Items: {menuItems.length}</Text>
       
       <FlatList
         data={groupedMenu}
@@ -168,8 +169,15 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 10,
     color: '#2c3e50',
+  },
+  totalItems: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#7f8c8d',
+    fontWeight: '600',
   },
   form: {
     backgroundColor: 'white',
