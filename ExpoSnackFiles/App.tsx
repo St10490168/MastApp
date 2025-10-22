@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Alert, ScrollView } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 
 interface MenuItem {
   id: string;
@@ -11,12 +10,12 @@ interface MenuItem {
 }
 
 const PREDEFINED_ITEMS: MenuItem[] = [
-  { id: '1', name: 'Bruschetta', description: 'Toasted bread with tomatoes and basil', course: 'Starters', price: '12.99' },
-  { id: '2', name: 'Caesar Salad', description: 'Fresh romaine with parmesan and croutons', course: 'Starters', price: '14.50' },
-  { id: '3', name: 'Grilled Salmon', description: 'Atlantic salmon with lemon herbs', course: 'Mains', price: '28.99' },
-  { id: '4', name: 'Beef Tenderloin', description: 'Premium cut with red wine reduction', course: 'Mains', price: '35.00' },
-  { id: '5', name: 'Chocolate Lava Cake', description: 'Warm chocolate cake with molten center', course: 'Desserts', price: '9.99' },
-  { id: '6', name: 'Tiramisu', description: 'Classic Italian coffee-flavored dessert', course: 'Desserts', price: '8.50' }
+  { id: '1', name: 'Bruschetta', description: 'Toasted bread with tomatoes and basil', course: 'Starters', price: '129.99' },
+  { id: '2', name: 'Caesar Salad', description: 'Fresh romaine with parmesan and croutons', course: 'Starters', price: '145.00' },
+  { id: '3', name: 'Grilled Salmon', description: 'Atlantic salmon with lemon herbs', course: 'Mains', price: '289.99' },
+  { id: '4', name: 'Beef Tenderloin', description: 'Premium cut with red wine reduction', course: 'Mains', price: '350.00' },
+  { id: '5', name: 'Chocolate Lava Cake', description: 'Warm chocolate cake with molten center', course: 'Desserts', price: '99.99' },
+  { id: '6', name: 'Tiramisu', description: 'Classic Italian coffee-flavored dessert', course: 'Desserts', price: '85.00' }
 ];
 
 const MenuItemCard = ({ item }: { item: MenuItem }) => (
@@ -24,7 +23,7 @@ const MenuItemCard = ({ item }: { item: MenuItem }) => (
     <Text style={styles.name}>{item.name}</Text>
     <Text style={styles.course}>Course: {item.course}</Text>
     <Text style={styles.description}>{item.description}</Text>
-    <Text style={styles.price}>Price: ${item.price}</Text>
+    <Text style={styles.price}>Price: R{item.price}</Text>
   </View>
 );
 
@@ -34,6 +33,9 @@ export default function App() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [course, setCourse] = useState('Starters');
+  const [showDropdown, setShowDropdown] = useState(false);
+  
+  const courseOptions = ['Starters', 'Mains', 'Desserts'];
   const [price, setPrice] = useState('');
 
   const handleAddItem = () => {
@@ -54,6 +56,7 @@ export default function App() {
     setName('');
     setDescription('');
     setCourse('Starters');
+    setShowDropdown(false);
     setPrice('');
     setShowAddForm(false);
   };
@@ -84,15 +87,30 @@ export default function App() {
           />
 
           <Text style={styles.label}>Course</Text>
-          <Picker
-            selectedValue={course}
-            onValueChange={(itemValue) => setCourse(itemValue)}
-            style={styles.picker}
+          <TouchableOpacity 
+            style={styles.dropdown}
+            onPress={() => setShowDropdown(!showDropdown)}
           >
-            <Picker.Item label="Starters" value="Starters" />
-            <Picker.Item label="Mains" value="Mains" />
-            <Picker.Item label="Desserts" value="Desserts" />
-          </Picker>
+            <Text style={styles.dropdownText}>{course || 'Select Course'}</Text>
+            <Text style={styles.dropdownArrow}>▼</Text>
+          </TouchableOpacity>
+          
+          {showDropdown && (
+            <View style={styles.dropdownList}>
+              {courseOptions.map((option) => (
+                <TouchableOpacity
+                  key={option}
+                  style={styles.dropdownItem}
+                  onPress={() => {
+                    setCourse(option);
+                    setShowDropdown(false);
+                  }}
+                >
+                  <Text style={styles.dropdownItemText}>{option}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
 
           <Text style={styles.label}>Price</Text>
           <TextInput
@@ -144,23 +162,27 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FFF8F0',
   },
   header: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: '#D2691E',
     padding: 20,
     paddingTop: 50,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
   },
   headerTitle: {
-    color: '#fff',
-    fontSize: 20,
+    color: '#FFFFFF',
+    fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: '#8B4513',
     marginBottom: 10,
     textAlign: 'center',
     marginTop: 20,
@@ -168,89 +190,140 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     marginBottom: 20,
-    color: '#555',
+    color: '#A0522D',
     textAlign: 'center',
+    fontWeight: '600',
   },
   list: {
     flex: 1,
     paddingHorizontal: 20,
   },
   card: {
-    padding: 15,
-    marginVertical: 10,
-    backgroundColor: '#FAFAFA',
-    borderRadius: 8,
+    padding: 18,
+    marginVertical: 8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 3,
+    borderColor: '#F4A460',
+    shadowColor: '#D2691E',
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
   },
   name: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: '#8B4513',
+    marginBottom: 4,
   },
   course: {
     fontSize: 14,
-    color: '#555',
+    color: '#CD853F',
+    fontWeight: '600',
+    backgroundColor: '#FFF8DC',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
   },
   description: {
     fontSize: 14,
-    color: '#777',
-    marginVertical: 5,
+    color: '#A0522D',
+    marginVertical: 6,
+    lineHeight: 18,
   },
   price: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#D2691E',
   },
   addButton: {
-    backgroundColor: '#2E7D32',
-    padding: 15,
-    borderRadius: 8,
+    backgroundColor: '#D2691E',
+    padding: 16,
+    borderRadius: 12,
     alignItems: 'center',
     margin: 20,
+    shadowColor: '#8B4513',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
   },
   addButtonText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
   },
   formContainer: {
-    padding: 20,
-    backgroundColor: '#fff',
+    padding: 24,
+    backgroundColor: '#FFFFFF',
     margin: 20,
-    borderRadius: 10,
+    borderRadius: 16,
+    shadowColor: '#D2691E',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
   },
   label: {
     fontSize: 16,
-    marginBottom: 5,
-    color: '#2E7D32',
+    marginBottom: 8,
+    color: '#8B4513',
+    fontWeight: '600',
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 15,
-    borderRadius: 5,
-  },
-  picker: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 15,
+    borderWidth: 2,
+    borderColor: '#F4A460',
+    padding: 12,
+    marginBottom: 16,
+    borderRadius: 8,
+    backgroundColor: '#FFF8F0',
+    fontSize: 16,
   },
   cancelButton: {
-    backgroundColor: '#ccc',
-    padding: 15,
-    borderRadius: 8,
+    backgroundColor: '#DEB887',
+    padding: 16,
+    borderRadius: 12,
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 12,
   },
   cancelButtonText: {
-    color: '#333',
+    color: '#8B4513',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  dropdown: {
+    borderWidth: 2,
+    borderColor: '#F4A460',
+    padding: 12,
+    marginBottom: 16,
+    borderRadius: 8,
+    backgroundColor: '#FFF8F0',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  dropdownText: {
+    fontSize: 16,
+    color: '#8B4513',
+  },
+  dropdownArrow: {
+    fontSize: 12,
+    color: '#8B4513',
+  },
+  dropdownList: {
+    borderWidth: 2,
+    borderColor: '#F4A460',
+    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    marginBottom: 16,
+    marginTop: -16,
+  },
+  dropdownItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F4A460',
+  },
+  dropdownItemText: {
+    fontSize: 16,
+    color: '#8B4513',
   },
 });
