@@ -4,6 +4,7 @@ import { MenuItem, COURSES } from '../utils/types';
 import { MenuItemCard } from '../components/MenuItemCard';
 import { theme } from '../utils/theme';
 import { commonStyles } from '../utils/commonStyles';
+import { validateMenuItem, generateUniqueId } from '../utils/arrayHelpers';
 
 interface ManageMenuScreenProps {
   menuItems: MenuItem[];
@@ -26,26 +27,48 @@ export const ManageMenuScreen: React.FC<ManageMenuScreenProps> = ({
   const [price, setPrice] = useState('');
 
   const handleAddItem = () => {
-    if (!name || !description || !price) {
-      Alert.alert('Error', 'Please fill out all fields.');
-      return;
+    try {
+      if (!name?.trim() || !description?.trim() || !price?.trim()) {
+        Alert.alert('Validation Error', 'Please fill out all fields.');
+        return;
+      }
+
+      const priceNumber = Number(price.replace(/[^0-9.]/g, ''));
+      if (isNaN(priceNumber) || priceNumber <= 0) {
+        Alert.alert('Invalid Price', 'Please enter a valid price greater than 0.');
+        return;
+      }
+
+      if (!selectedCourse || !COURSES.includes(selectedCourse as any)) {
+        Alert.alert('Invalid Course', 'Please select a valid course.');
+        return;
+      }
+
+      const newItem: MenuItem = {
+        id: generateUniqueId(),
+        name: name.trim(),
+        description: description.trim(),
+        course: selectedCourse,
+        price: priceNumber.toFixed(2),
+      };
+
+      if (!validateMenuItem(newItem)) {
+        Alert.alert('Validation Error', 'Invalid menu item data.');
+        return;
+      }
+
+      onAddItem(newItem);
+      setName('');
+      setDescription('');
+      setSelectedCourse('Starters');
+      setIsDropdownOpen(false);
+      setPrice('');
+      setShowAddForm(false);
+      
+    } catch (error) {
+      console.error('Error adding item:', error);
+      Alert.alert('Error', 'Failed to add item to menu. Please try again.');
     }
-
-    const newItem: MenuItem = {
-      id: Date.now().toString(),
-      name,
-      description,
-      course: selectedCourse,
-      price,
-    };
-
-    onAddItem(newItem);
-    setName('');
-    setDescription('');
-    setSelectedCourse('Starters');
-    setIsDropdownOpen(false);
-    setPrice('');
-    setShowAddForm(false);
   };
 
   if (showAddForm) {

@@ -3,6 +3,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native
 import { MenuItem, COURSES } from '../utils/types';
 import { calculateAverage } from '../utils/calculations';
 import { MenuItemCard } from '../components/MenuItemCard';
+import { ArrayDebugInfo } from '../components/ArrayDebugInfo';
 import { theme } from '../utils/theme';
 import { commonStyles } from '../utils/commonStyles';
 
@@ -13,6 +14,18 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ menuItems, onNavigateToManage, onNavigateToFilter }) => {
+  const safeMenuItems = Array.isArray(menuItems) ? menuItems : [];
+  
+  const renderAveragePrice = (items: MenuItem[], course?: string) => {
+    try {
+      const avg = calculateAverage(items, course);
+      return isNaN(avg) ? '0.00' : avg.toFixed(2);
+    } catch (error) {
+      console.warn('Error rendering average price:', error);
+      return '0.00';
+    }
+  };
+  
   return (
     <View style={commonStyles.container}>
       <View style={commonStyles.header}>
@@ -20,7 +33,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ menuItems, onNavigateToM
       </View>
       
       <Text style={commonStyles.screenTitle}>Complete Menu</Text>
-      <Text style={commonStyles.subtitle}>Total Items: {menuItems.length}</Text>
+      <Text style={commonStyles.subtitle}>Total Items: {safeMenuItems.length}</Text>
+      
+      <ArrayDebugInfo items={safeMenuItems} showDebug={typeof __DEV__ !== 'undefined' && __DEV__} />
 
       <View style={[commonStyles.card, styles.priceCard]}>
         <Text style={styles.sectionTitle}>Average Prices by Course</Text>
@@ -28,18 +43,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ menuItems, onNavigateToM
           {COURSES.map(course => (
             <View key={course} style={styles.priceItem}>
               <Text style={styles.courseLabel}>{course}</Text>
-              <Text style={styles.priceValue}>R{calculateAverage(menuItems, course).toFixed(2)}</Text>
+              <Text style={styles.priceValue}>R{renderAveragePrice(safeMenuItems, course)}</Text>
             </View>
           ))}
         </View>
         <View style={styles.totalPrice}>
           <Text style={styles.totalLabel}>Overall Average</Text>
-          <Text style={styles.totalValue}>R{calculateAverage(menuItems).toFixed(2)}</Text>
+          <Text style={styles.totalValue}>R{renderAveragePrice(safeMenuItems)}</Text>
         </View>
       </View>
 
       <FlatList
-        data={menuItems}
+        data={safeMenuItems}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <MenuItemCard item={item} />}
         style={commonStyles.list}

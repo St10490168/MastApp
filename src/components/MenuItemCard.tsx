@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { MenuItem } from '../utils/types';
 import { theme } from '../utils/theme';
 import { commonStyles } from '../utils/commonStyles';
@@ -10,7 +10,25 @@ interface Props {
   onRemove?: (id: string) => void;
 }
 
-export const MenuItemCard: React.FC<Props> = ({ item, canRemove, onRemove }) => (
+export const MenuItemCard: React.FC<Props> = ({ item, canRemove, onRemove }) => {
+  const handleRemove = () => {
+    if (!onRemove) return;
+    
+    Alert.alert(
+      'Remove Item',
+      `Are you sure you want to remove "${item.name}" from the menu?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Remove', 
+          style: 'destructive',
+          onPress: () => onRemove(item.id)
+        }
+      ]
+    );
+  };
+
+  return (
   <View style={[commonStyles.card, styles.menuCard]}>
     <View style={styles.header}>
       <Text style={styles.name}>{item.name}</Text>
@@ -22,13 +40,14 @@ export const MenuItemCard: React.FC<Props> = ({ item, canRemove, onRemove }) => 
     <View style={styles.footer}>
       <Text style={styles.price}>R{item.price}</Text>
       {canRemove && onRemove && (
-        <TouchableOpacity style={styles.removeButton} onPress={() => onRemove(item.id)}>
+        <TouchableOpacity style={styles.removeButton} onPress={handleRemove}>
           <Text style={styles.removeButtonText}>Remove</Text>
         </TouchableOpacity>
       )}
     </View>
   </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   menuCard: {
