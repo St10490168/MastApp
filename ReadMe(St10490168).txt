@@ -1,22 +1,22 @@
 # Chef Christoffel Menu Management App
 
-## Overview
+ Overview
 A React Native mobile application for managing restaurant menu items. Allows chefs to add, remove, and filter menu items while displaying average prices by course.
 
-## Features
+ Features
 - Menu Display: View complete menu with average prices by course
 - Add Menu Items: Separate screen for adding dishes with validation
 - Remove Items: Delete menu items with confirmation
 - Filter by Course: Filter menu items by category
 - Input Validation: Prevents invalid submissions with error messages
 
-## Technical Implementation
+ Technical Implementation
 - CRUD Operations: Create, Read, Update, Delete functionality
 - Input Validation: Required fields and price validation
 - State Management: React hooks (useState, useCallback)
 - Data Storage: Array-based with immutable updates
 
-## Setup Instructions
+ Setup Instructions
 1. Install dependencies: `npm install`
 2. Start development server: `npx expo start`
 3. Scan QR code with Expo Go app
@@ -26,14 +26,14 @@ Testing in Expo Snack
 2. Copy App.tsx content and paste into editor
 3. Click "Run" to test
 
-## Code Standards
+ Code Standards
 - camelCase: Variables and functions
 - PascalCase: Components
 - UPPER_CASE: Constants
 - Single-file structure for Expo compatibility
 - All key functions documented with comments
 
-## References (Harvard: Anglia - IIE Adaptation)
+ References 
 
 Institutional Documents
 - IIE Module Manual. 2024. *MAST5112: Mobile App Scripting and Technologies*. The Independent Institute of Education.
@@ -99,7 +99,7 @@ Version Control and Development
 AI Tools (Used for Documentation Guidance)
 - Anthropic. 2024. *Claude AI* (Version 3.5). [Large language model]. Available at: https://claude.ai [Accessed 7 November 2025].
 
-## Code Sources and Adaptations
+ Code Sources and Adaptations
 
 Original Development
 All core functionality including CRUD operations, state management, and UI components were developed specifically for this project without copying from external sources.
@@ -115,7 +115,7 @@ Standard Library Usage
 No External Code Copied
 This project contains no copied code blocks from tutorials or external sources. All implementations are original.
 
-## Testing Instructions
+Testing Instructions
 1. Home Screen: Verify average price calculations
 2. Add Items: Test form validation and item creation
 3. Remove Items: Confirm deletion with dialogs
@@ -124,63 +124,63 @@ This project contains no copied code blocks from tutorials or external sources. 
 
 ---
 
-# Academic Integrity & Submission Checklist
+ Academic Integrity & Submission Checklist
 
-## Technical Completeness
+ Technical Completeness
 
 App Functionality
-- App runs in Expo Go: Tested and confirmed working without errors
-- All screens work: Home, Manage Menu, and Filter screens navigate correctly
-- CRUD Operations Complete:
-  - Create: Add new menu items with validation
-  - Read: Display menu items and calculate averages
-  - Update: Course selection and price formatting (implicit update)
-  - Delete: Remove items with confirmation dialogs
-- Input Validation: All forms validate required fields and show clear error messages
+-  App runs in Expo Go: Tested and confirmed working without errors
+-  All screens work: Home, Manage Menu, and Filter screens navigate correctly
+-  CRUD Operations Complete:
+-  Create: Add new menu items with validation
+- Read: Display menu items and calculate averages
+-  Update: Course selection and price formatting (implicit update)
+-  Delete: Remove items with confirmation dialogs
+-  Input Validation: All forms validate required fields and show clear error messages
 - Data Persistence: React state management maintains data across navigation
 - Project Structure: Logical single-file organization for Expo compatibility
 
 Code Standards
-- Naming Conventions: 
-  - camelCase for variables (`menuItems`, `handleAdd`)
-  - PascalCase for components (`MenuCard`, `HomeScreen`)
-  - UPPER_CASE for constants (`COURSES`, `INITIAL_ITEMS`)
-- No unused imports: All imports are utilized
-- No redundant code: Clean, efficient implementation
-- Key functions commented: CRUD operations and validation logic documented
+-  Naming Conventions: 
+ - camelCase for variables (`menuItems`, `handleAdd`)
+ - PascalCase for components (`MenuCard`, `HomeScreen`)
+- UPPER_CASE for constants (`COURSES`, `INITIAL_ITEMS`)
+-  No unused imports: All imports are utilized
+-  No redundant code: Clean, efficient implementation
+-  Key functions commented: CRUD operations and validation logic documented
 
-## Referencing & Reference List (Harvard: Anglia - IIE)
+ Referencing & Reference List (Harvard: Anglia - IIE)
 
 Complete Reference List
-- Institutional Documents:
-  - Portfolio of Evidence (PoE) document
-  - Module Manual (MAST5112)
-- React & React Native References:
-  - React documentation (react.dev)
-  - Hooks used (useState, useCallback)
-  - React Native documentation (reactnative.dev)
-- Expo SDK References:
-  - StatusBar documentation
-  - SafeAreaView documentation
-  - Alert documentation
-- Development Tools:
-  - Expo Snack
-  - Expo Go
-- AI Tools: Claude AI properly referenced
+-  Institutional Documents:
+-  Portfolio of Evidence (PoE) document
+-  Module Manual (MAST5112)
+-  React & React Native References:
+-  React documentation (react.dev)
+-  Hooks used (useState, useCallback)
+-  React Native documentation (reactnative.dev)
+-  Expo SDK References:
+-  StatusBar documentation
+-  SafeAreaView documentation
+-  Alert documentation
+-  Development Tools:
+-  Expo Snack
+-  Expo Go
+-  AI Tools: Claude AI properly referenced
 
 Reference Formatting
-- Harvard: Anglia (IIE) format: All references follow correct format
-- Consistent formatting: Author, date, title, type, availability
-- Complete information: All required fields included
-- Alphabetical order: References properly ordered
+-  Harvard: Anglia (IIE) format: All references follow correct format
+-  Consistent formatting: Author, date, title, type, availability
+-  Complete information: All required fields included
+-  Alphabetical order: References properly ordered
 
-## Source Code Attribution
+ Source Code Attribution
 
 Code Attribution Comments
-- No external code copied: All code is original implementation
-- Standard library usage: React Native components used per documentation
-- Original patterns: All logic and patterns developed for this project
-- No tutorial copying: No code blocks copied from external sources
+-  No external code copied: All code is original implementation
+-  Standard library usage: React Native components used per documentation
+-  Original patterns: All logic and patterns developed for this project
+-  No tutorial copying: No code blocks copied from external sources
 
 Attribution Headers (Not Required - No External Code Used)
 Since all code is original, no attribution headers are needed. The project uses only:
@@ -188,107 +188,107 @@ Since all code is original, no attribution headers are needed. The project uses 
 - Original business logic developed for this specific assignment
 - Custom styling and layout patterns
 
-## AI Usage Disclosure
+ AI Usage Disclosure
 
 Annexure Included
-- Complete annexure: "Disclosure of AI Usage in my Assessment" document created
-- Detailed sections: Each AI usage documented with:
-  - Section where used
-  - Tool name (Claude AI)
-  - Purpose/intention
-  - Date of use
-  - Evidence/explanation
-- AI in reference list: Claude AI properly referenced in Harvard format
+-  Complete annexure: "Disclosure of AI Usage in my Assessment" document created
+-  Detailed sections: Each AI usage documented with:
+-  Section where used
+-  Tool name (Claude AI)
+-  Purpose/intention
+-  Date of use
+-  Evidence/explanation
+-  AI in reference list: Claude AI properly referenced in Harvard format
 
 Transparency
-- Full disclosure: All AI interactions documented
-- Clear boundaries: What AI was/wasn't used for clearly stated
-- Understanding confirmed: Can explain all code and logic
-- Original work: All implementation is my own
+-  Full disclosure: All AI interactions documented
+-  Clear boundaries: What AI was/wasn't used for clearly stated
+-  Understanding confirmed: Can explain all code and logic
+-  Original work: All implementation is my own
 
-## Academic Integrity & Plagiarism Prevention
+ Academic Integrity & Plagiarism Prevention
 
 Original Work
-- No peer copying: Code is entirely my own work
-- No code sharing: Have not shared code with classmates
-- Original implementation: All logic developed independently
-- Understanding verified: Can explain every line of code
+-  No peer copying: Code is entirely my own work
+-  No code sharing: Have not shared code with classmates
+-  Original implementation: All logic developed independently
+-  Understanding verified: Can explain every line of code
 
 Code Quality
-- Consistent style: Uniform naming and formatting throughout
-- Personal voice: Comments reflect my understanding
-- Logical structure: Code organization makes sense
-- Clean implementation: No "blind pastes" or unexplained complexity
+-  Consistent style: Uniform naming and formatting throughout
+-  Personal voice: Comments reflect my understanding
+-  Logical structure: Code organization makes sense
+-  Clean implementation: No "blind pastes" or unexplained complexity
 
 Documentation Quality
-- Comprehensive README: Covers all required sections
-- Code sources section: Documents what was adapted (none in this case)
-- Clear explanations: Technical concepts explained in my own words
-- Academic standards: Proper referencing and citation
+-  Comprehensive README: Covers all required sections
+-  Code sources section: Documents what was adapted (none in this case)
+-  Clear explanations: Technical concepts explained in my own words
+-  Academic standards: Proper referencing and citation
 
-## Required Code Comments
+ Required Code Comments
 
 CRUD Functions
-- Create function: `handleAdd()` fully commented with validation steps
-- Read operations: `calculateAverage()` and display logic documented
-- Update operations: Course selection and state updates explained
-- Delete function: `handleRemove()` and `removeItem()` documented
+-  Create function: `handleAdd()` fully commented with validation steps
+-  Read operations: `calculateAverage()` and display logic documented
+-  Update operations: Course selection and state updates explained
+-  Delete function: `handleRemove()` and `removeItem()` documented
 
 Validation Logic
-- Input validation: Form validation logic clearly commented
-- Error handling: Alert usage and error messages documented
-- Data sanitization: Price formatting and text trimming explained
+-  Input validation: Form validation logic clearly commented
+-  Error handling: Alert usage and error messages documented
+-  Data sanitization: Price formatting and text trimming explained
 
 Key Features
-- State management: React hooks usage documented
-- Navigation logic: Screen switching explained
-- UI components: Component purposes and props documented
+-  State management: React hooks usage documented
+-  Navigation logic: Screen switching explained
+-  UI components: Component purposes and props documented
 
-## Final Self-Check
+ Final Self-Check
 
 Technical Verification
-- Expo Go tested: App runs without errors on mobile device
-- All features work: CRUD operations tested and functional
-- Validation tested: Form validation prevents invalid submissions
-- Navigation tested: All screen transitions work smoothly
+-  Expo Go tested: App runs without errors on mobile device
+-  All features work: CRUD operations tested and functional
+-  Validation tested: Form validation prevents invalid submissions
+-  Navigation tested: All screen transitions work smoothly
 
 Academic Verification
-- References complete: All sources properly cited
-- AI disclosed: Full transparency about AI usage
-- Original work: All code is my own implementation
-- Understanding confirmed: Can explain all technical decisions
+-  References complete: All sources properly cited
+-  AI disclosed: Full transparency about AI usage
+-  Original work: All code is my own implementation
+-  Understanding confirmed: Can explain all technical decisions
 
 Documentation Verification
-- README complete: All required sections included
-- Comments adequate: Key functions properly documented
-- Standards followed: Code follows established conventions
-- Integrity maintained: Academic honesty throughout
+-  README complete: All required sections included
+-  Comments adequate: Key functions properly documented
+-  Standards followed: Code follows established conventions
+-  Integrity maintained: Academic honesty throughout
 
-## Summary Statement
+ Summary Statement
 
 This project represents my original work completed for MAST5112. All code has been developed by me based on my understanding of React Native concepts learned in the course. Where AI assistance was used for guidance on documentation and best practices, it has been fully disclosed. I can explain and defend every aspect of the implementation, and the work reflects my learning and application of mobile app development principles.
 
 Student Confirmation: I confirm that this work is my own and meets all academic integrity requirements for submission.
 
-Date: 15 January 2025
+Date: 12 November 2025
 
----
 
-# Annexure: Disclosure of AI Usage in my Assessment
 
-## Section 1: Project Structure and Organization
+ Annexure: Disclosure of AI Usage in my Assessment
+
+ Section 1: Project Structure and Organization
 - Tool: Claude AI (Anthropic, Version 3.5)
 - Purpose: Guidance on organizing React Native project structure and component separation
 - Date: 15 January 2025
 - Evidence: Used for brainstorming optimal file organization and component architecture patterns
 
-## Section 2: Input Validation Patterns
+ Section 2: Input Validation Patterns
 - Tool: Claude AI (Anthropic, Version 3.5)
 - Purpose: Brainstorming validation approaches and error handling strategies
 - Date: 15 January 2025
 - Evidence: Discussed best practices for form validation and user feedback patterns
 
-## Important Notes on AI Usage
+Important Notes on AI Usage
 
 What AI Was Used For:
 - Brainstorming: Discussing project structure approaches
@@ -315,6 +315,4 @@ Adaptation Process:
 
 This disclosure ensures complete transparency about AI assistance while confirming that all code implementation, logic, and understanding are my own original work.
 
----
 
-*This project was developed as part of MAST5112 Mobile App Scripting and Technologies coursework at The Independent Institute of Education.*
