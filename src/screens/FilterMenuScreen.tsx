@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { MenuItem, COURSE_OPTIONS } from '../utils/types';
-import { getItemsByCourse } from '../utils/menuUtils';
+import { MenuItem, COURSES } from '../utils/types';
+import { filterByCourse } from '../utils/calculations';
 import { MenuItemCard } from '../components/MenuItemCard';
+import { theme } from '../utils/theme';
+import { commonStyles } from '../utils/commonStyles';
 
 interface FilterMenuScreenProps {
   menuItems: MenuItem[];
@@ -10,141 +12,120 @@ interface FilterMenuScreenProps {
 }
 
 export const FilterMenuScreen: React.FC<FilterMenuScreenProps> = ({ menuItems, onBack }) => {
-  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+  const [activeCourse, setActiveCourse] = useState<string | null>(null);
 
-  const filteredItems = selectedCourse 
-    ? getItemsByCourse(menuItems, selectedCourse)
+  const displayedItems = activeCourse 
+    ? filterByCourse(menuItems, activeCourse)
     : menuItems;
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <Text style={styles.backButtonText}>← Back</Text>
+    <View style={commonStyles.container}>
+      <View style={commonStyles.header}>
+        <TouchableOpacity style={commonStyles.backButton} onPress={onBack}>
+          <Text style={commonStyles.backButtonText}>← Back</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Filter Menu</Text>
+        <Text style={commonStyles.headerTitle}>Filter Menu</Text>
       </View>
       
-      <Text style={styles.title}>Filter by Course</Text>
+      <Text style={commonStyles.screenTitle}>Filter by Course</Text>
       
-      <View style={styles.filterContainer}>
-        <TouchableOpacity
-          style={[styles.filterButton, !selectedCourse && styles.activeFilter]}
-          onPress={() => setSelectedCourse(null)}
-        >
-          <Text style={[styles.filterText, !selectedCourse && styles.activeFilterText]}>
-            All ({menuItems.length})
-          </Text>
-        </TouchableOpacity>
-        
-        {COURSE_OPTIONS.map(course => {
-          const courseItems = getItemsByCourse(menuItems, course);
-          return (
-            <TouchableOpacity
-              key={course}
-              style={[styles.filterButton, selectedCourse === course && styles.activeFilter]}
-              onPress={() => setSelectedCourse(course)}
-            >
-              <Text style={[styles.filterText, selectedCourse === course && styles.activeFilterText]}>
-                {course} ({courseItems.length})
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
+      <View style={[commonStyles.card, styles.filterCard]}>
+        <Text style={styles.filterTitle}>Choose a category</Text>
+        <View style={styles.filterGrid}>
+          <TouchableOpacity
+            style={[styles.filterChip, !activeCourse && styles.activeChip]}
+            onPress={() => setActiveCourse(null)}
+          >
+            <Text style={[styles.chipText, !activeCourse && styles.activeChipText]}>
+              All
+            </Text>
+            <Text style={[styles.chipCount, !activeCourse && styles.activeChipCount]}>
+              {menuItems.length}
+            </Text>
+          </TouchableOpacity>
+          
+          {COURSES.map(course => {
+            const courseCount = filterByCourse(menuItems, course).length;
+            const isActive = activeCourse === course;
+            return (
+              <TouchableOpacity
+                key={course}
+                style={[styles.filterChip, isActive && styles.activeChip]}
+                onPress={() => setActiveCourse(course)}
+              >
+                <Text style={[styles.chipText, isActive && styles.activeChipText]}>
+                  {course}
+                </Text>
+                <Text style={[styles.chipCount, isActive && styles.activeChipCount]}>
+                  {courseCount}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </View>
 
-      <Text style={styles.subtitle}>
-        {selectedCourse ? `${selectedCourse} (${filteredItems.length})` : `All Items (${filteredItems.length})`}
+      <Text style={commonStyles.subtitle}>
+        Showing {displayedItems.length} {activeCourse ? activeCourse.toLowerCase() : 'items'}
       </Text>
 
       <FlatList
-        data={filteredItems}
+        data={displayedItems}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <MenuItemCard item={item} />}
-        style={styles.list}
+        style={commonStyles.list}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF8F0',
+  filterCard: {
+    marginBottom: theme.spacing.md,
   },
-  header: {
-    backgroundColor: '#D2691E',
-    padding: 20,
-    paddingTop: 50,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    color: '#FFFFFF',
-    fontSize: 22,
+  filterTitle: {
+    fontSize: theme.fontSizes.lg,
     fontWeight: 'bold',
+    color: theme.colors.secondary,
     textAlign: 'center',
-    flex: 1,
+    marginBottom: theme.spacing.lg,
   },
-  backButton: {
-    position: 'absolute',
-    left: 20,
-    top: 50,
-    padding: 10,
-  },
-  backButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#8B4513',
-    marginBottom: 20,
-    textAlign: 'center',
-    marginTop: 20,
-  },
-  filterContainer: {
+  filterGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    justifyContent: 'space-between',
   },
-  filterButton: {
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    margin: 4,
+  filterChip: {
+    backgroundColor: theme.colors.background,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+    borderRadius: theme.borderRadius.xl,
+    marginBottom: theme.spacing.sm,
+    minWidth: '48%',
+    alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#F4A460',
+    borderColor: theme.colors.border,
   },
-  activeFilter: {
-    backgroundColor: '#D2691E',
-    borderColor: '#D2691E',
+  activeChip: {
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
   },
-  filterText: {
-    color: '#8B4513',
+  chipText: {
+    fontSize: theme.fontSizes.md,
     fontWeight: '600',
+    color: theme.colors.secondary,
+    marginBottom: theme.spacing.xs,
   },
-  activeFilterText: {
-    color: '#FFFFFF',
+  activeChipText: {
+    color: theme.colors.surface,
   },
-  subtitle: {
-    fontSize: 16,
-    marginBottom: 20,
-    color: '#A0522D',
-    textAlign: 'center',
-    fontWeight: '600',
+  chipCount: {
+    fontSize: theme.fontSizes.lg,
+    fontWeight: 'bold',
+    color: theme.colors.primary,
   },
-  list: {
-    flex: 1,
-    paddingHorizontal: 20,
+  activeChipCount: {
+    color: theme.colors.surface,
   },
 });

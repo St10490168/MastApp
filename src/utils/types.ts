@@ -6,4 +6,5 @@ export interface MenuItem {
   price: string;
 }
 
-export const COURSE_OPTIONS = ['Starters', 'Mains', 'Desserts'];
+export const COURSES = ['Starters', 'Mains', 'Desserts'] as const;
+export type CourseType = typeof COURSES[number];

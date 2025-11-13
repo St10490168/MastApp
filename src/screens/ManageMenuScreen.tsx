@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Alert, ScrollView } from 'react-native';
-import { MenuItem, COURSE_OPTIONS } from '../utils/types';
+import { MenuItem, COURSES } from '../utils/types';
 import { MenuItemCard } from '../components/MenuItemCard';
+import { theme } from '../utils/theme';
+import { commonStyles } from '../utils/commonStyles';
 
 interface ManageMenuScreenProps {
   menuItems: MenuItem[];
@@ -19,8 +21,8 @@ export const ManageMenuScreen: React.FC<ManageMenuScreenProps> = ({
   const [showAddForm, setShowAddForm] = useState(false);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [course, setCourse] = useState('Starters');
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState('Starters');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [price, setPrice] = useState('');
 
   const handleAddItem = () => {
@@ -33,85 +35,98 @@ export const ManageMenuScreen: React.FC<ManageMenuScreenProps> = ({
       id: Date.now().toString(),
       name,
       description,
-      course,
+      course: selectedCourse,
       price,
     };
 
     onAddItem(newItem);
     setName('');
     setDescription('');
-    setCourse('Starters');
-    setShowDropdown(false);
+    setSelectedCourse('Starters');
+    setIsDropdownOpen(false);
     setPrice('');
     setShowAddForm(false);
   };
 
   if (showAddForm) {
     return (
-      <ScrollView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Add Menu Item</Text>
+      <ScrollView style={commonStyles.container}>
+        <View style={commonStyles.header}>
+          <TouchableOpacity style={commonStyles.backButton} onPress={() => setShowAddForm(false)}>
+            <Text style={commonStyles.backButtonText}>← Cancel</Text>
+          </TouchableOpacity>
+          <Text style={commonStyles.headerTitle}>Add Menu Item</Text>
         </View>
         
-        <View style={styles.formContainer}>
-          <Text style={styles.label}>Dish Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter dish name"
-            value={name}
-            onChangeText={setName}
-          />
-
-          <Text style={styles.label}>Description</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter description"
-            value={description}
-            onChangeText={setDescription}
-            multiline
-          />
-
-          <Text style={styles.label}>Course</Text>
-          <TouchableOpacity 
-            style={styles.dropdown}
-            onPress={() => setShowDropdown(!showDropdown)}
-          >
-            <Text style={styles.dropdownText}>{course}</Text>
-            <Text style={styles.dropdownArrow}>▼</Text>
-          </TouchableOpacity>
+        <View style={[commonStyles.card, styles.formCard]}>
+          <Text style={styles.formTitle}>New Dish Details</Text>
           
-          {showDropdown && (
-            <View style={styles.dropdownList}>
-              {COURSE_OPTIONS.map((option) => (
-                <TouchableOpacity
-                  key={option}
-                  style={styles.dropdownItem}
-                  onPress={() => {
-                    setCourse(option);
-                    setShowDropdown(false);
-                  }}
-                >
-                  <Text style={styles.dropdownItemText}>{option}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Dish Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter dish name"
+              value={name}
+              onChangeText={setName}
+              placeholderTextColor={theme.colors.textMuted}
+            />
+          </View>
 
-          <Text style={styles.label}>Price</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter price"
-            value={price}
-            onChangeText={setPrice}
-            keyboardType="numeric"
-          />
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Description</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Enter description"
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              numberOfLines={3}
+              placeholderTextColor={theme.colors.textMuted}
+            />
+          </View>
 
-          <TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
-            <Text style={styles.addButtonText}>Add Item</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.cancelButton} onPress={() => setShowAddForm(false)}>
-            <Text style={styles.cancelButtonText}>Cancel</Text>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Course</Text>
+            <TouchableOpacity 
+              style={styles.dropdown}
+              onPress={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              <Text style={styles.dropdownText}>{selectedCourse}</Text>
+              <Text style={styles.dropdownArrow}>▼</Text>
+            </TouchableOpacity>
+            
+            {isDropdownOpen && (
+              <View style={styles.dropdownList}>
+                {COURSES.map((courseOption) => (
+                  <TouchableOpacity
+                    key={courseOption}
+                    style={styles.dropdownItem}
+                    onPress={() => {
+                      setSelectedCourse(courseOption);
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    <Text style={styles.dropdownItemText}>{courseOption}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Price (R)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="0.00"
+              value={price}
+              onChangeText={setPrice}
+              keyboardType="decimal-pad"
+              placeholderTextColor={theme.colors.textMuted}
+            />
+          </View>
+
+          <TouchableOpacity style={commonStyles.primaryButton} onPress={handleAddItem}>
+            <Text style={commonStyles.primaryButtonText}>Add to Menu</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -119,15 +134,16 @@ export const ManageMenuScreen: React.FC<ManageMenuScreenProps> = ({
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <Text style={styles.backButtonText}>← Back</Text>
+    <View style={commonStyles.container}>
+      <View style={commonStyles.header}>
+        <TouchableOpacity style={commonStyles.backButton} onPress={onBack}>
+          <Text style={commonStyles.backButtonText}>← Back</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Manage Menu</Text>
+        <Text style={commonStyles.headerTitle}>Manage Menu</Text>
       </View>
       
-      <Text style={styles.title}>Menu Items ({menuItems.length})</Text>
+      <Text style={commonStyles.screenTitle}>Menu Items</Text>
+      <Text style={commonStyles.subtitle}>{menuItems.length} items • Tap remove to delete</Text>
 
       <FlatList
         data={menuItems}
@@ -135,156 +151,90 @@ export const ManageMenuScreen: React.FC<ManageMenuScreenProps> = ({
         renderItem={({ item }) => (
           <MenuItemCard 
             item={item} 
-            showRemoveButton={true}
+            canRemove
             onRemove={onRemoveItem}
           />
         )}
-        style={styles.list}
+        style={commonStyles.list}
+        showsVerticalScrollIndicator={false}
       />
 
       <TouchableOpacity
-        style={styles.addButton}
+        style={commonStyles.primaryButton}
         onPress={() => setShowAddForm(true)}
       >
-        <Text style={styles.addButtonText}>+ Add Menu Item</Text>
+        <Text style={commonStyles.primaryButtonText}>+ Add New Item</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF8F0',
+  formCard: {
+    marginTop: theme.spacing.lg,
   },
-  header: {
-    backgroundColor: '#D2691E',
-    padding: 20,
-    paddingTop: 50,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    color: '#FFFFFF',
-    fontSize: 22,
+  formTitle: {
+    fontSize: theme.fontSizes.xl,
     fontWeight: 'bold',
+    color: theme.colors.secondary,
     textAlign: 'center',
-    flex: 1,
+    marginBottom: theme.spacing.xl,
   },
-  backButton: {
-    position: 'absolute',
-    left: 20,
-    top: 50,
-    padding: 10,
-  },
-  backButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#8B4513',
-    marginBottom: 10,
-    textAlign: 'center',
-    marginTop: 20,
-  },
-  list: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  addButton: {
-    backgroundColor: '#D2691E',
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    margin: 20,
-    shadowColor: '#8B4513',
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-  },
-  addButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  formContainer: {
-    padding: 24,
-    backgroundColor: '#FFFFFF',
-    margin: 20,
-    borderRadius: 16,
-    shadowColor: '#D2691E',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 8,
+  inputGroup: {
+    marginBottom: theme.spacing.lg,
   },
   label: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#8B4513',
+    fontSize: theme.fontSizes.md,
     fontWeight: '600',
+    color: theme.colors.secondary,
+    marginBottom: theme.spacing.sm,
   },
   input: {
-    borderWidth: 2,
-    borderColor: '#F4A460',
-    padding: 12,
-    marginBottom: 16,
-    borderRadius: 8,
-    backgroundColor: '#FFF8F0',
-    fontSize: 16,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.surface,
+    fontSize: theme.fontSizes.md,
+    color: theme.colors.text,
   },
-  cancelButton: {
-    backgroundColor: '#DEB887',
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 12,
-  },
-  cancelButtonText: {
-    color: '#8B4513',
-    fontSize: 16,
-    fontWeight: 'bold',
+  textArea: {
+    height: 80,
+    textAlignVertical: 'top',
   },
   dropdown: {
-    borderWidth: 2,
-    borderColor: '#F4A460',
-    padding: 12,
-    marginBottom: 16,
-    borderRadius: 8,
-    backgroundColor: '#FFF8F0',
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.surface,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   dropdownText: {
-    fontSize: 16,
-    color: '#8B4513',
+    fontSize: theme.fontSizes.md,
+    color: theme.colors.text,
   },
   dropdownArrow: {
-    fontSize: 12,
-    color: '#8B4513',
+    fontSize: theme.fontSizes.sm,
+    color: theme.colors.textMuted,
   },
   dropdownList: {
-    borderWidth: 2,
-    borderColor: '#F4A460',
-    borderRadius: 8,
-    backgroundColor: '#FFFFFF',
-    marginBottom: 16,
-    marginTop: -16,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.surface,
+    marginTop: theme.spacing.xs,
+    ...theme.shadows.sm,
   },
   dropdownItem: {
-    padding: 12,
+    padding: theme.spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#F4A460',
+    borderBottomColor: theme.colors.border,
   },
   dropdownItemText: {
-    fontSize: 16,
-    color: '#8B4513',
+    fontSize: theme.fontSizes.md,
+    color: theme.colors.text,
   },
 });

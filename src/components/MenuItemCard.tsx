@@ -1,77 +1,89 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MenuItem } from '../utils/types';
+import { theme } from '../utils/theme';
+import { commonStyles } from '../utils/commonStyles';
 
-interface MenuItemCardProps {
+interface Props {
   item: MenuItem;
-  showRemoveButton?: boolean;
+  canRemove?: boolean;
   onRemove?: (id: string) => void;
 }
 
-export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, showRemoveButton, onRemove }) => (
-  <View style={styles.card}>
-    <Text style={styles.name}>{item.name}</Text>
-    <Text style={styles.course}>Course: {item.course}</Text>
+export const MenuItemCard: React.FC<Props> = ({ item, canRemove, onRemove }) => (
+  <View style={[commonStyles.card, styles.menuCard]}>
+    <View style={styles.header}>
+      <Text style={styles.name}>{item.name}</Text>
+      <View style={styles.courseTag}>
+        <Text style={styles.courseText}>{item.course}</Text>
+      </View>
+    </View>
     <Text style={styles.description}>{item.description}</Text>
-    <Text style={styles.price}>Price: R{item.price}</Text>
-    {showRemoveButton && onRemove && (
-      <TouchableOpacity style={styles.removeButton} onPress={() => onRemove(item.id)}>
-        <Text style={styles.removeButtonText}>Remove</Text>
-      </TouchableOpacity>
-    )}
+    <View style={styles.footer}>
+      <Text style={styles.price}>R{item.price}</Text>
+      {canRemove && onRemove && (
+        <TouchableOpacity style={styles.removeButton} onPress={() => onRemove(item.id)}>
+          <Text style={styles.removeButtonText}>Remove</Text>
+        </TouchableOpacity>
+      )}
+    </View>
   </View>
 );
 
 const styles = StyleSheet.create({
-  card: {
-    padding: 18,
-    marginVertical: 8,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#F4A460',
-    shadowColor: '#D2691E',
-    shadowOpacity: 0.15,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+  menuCard: {
+    marginVertical: theme.spacing.sm,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: theme.spacing.sm,
   },
   name: {
-    fontSize: 20,
+    fontSize: theme.fontSizes.xl,
     fontWeight: 'bold',
-    color: '#8B4513',
-    marginBottom: 4,
+    color: theme.colors.secondary,
+    flex: 1,
+    marginRight: theme.spacing.sm,
   },
-  course: {
-    fontSize: 14,
-    color: '#CD853F',
+  courseTag: {
+    backgroundColor: theme.colors.accent,
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
+    borderRadius: theme.borderRadius.sm,
+  },
+  courseText: {
+    fontSize: theme.fontSizes.xs,
     fontWeight: '600',
-    backgroundColor: '#FFF8DC',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-    alignSelf: 'flex-start',
+    color: theme.colors.secondary,
+    textTransform: 'uppercase',
   },
   description: {
-    fontSize: 14,
-    color: '#A0522D',
-    marginVertical: 6,
-    lineHeight: 18,
+    fontSize: theme.fontSizes.sm,
+    color: theme.colors.textMuted,
+    lineHeight: 20,
+    marginBottom: theme.spacing.md,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   price: {
-    fontSize: 18,
+    fontSize: theme.fontSizes.lg,
     fontWeight: 'bold',
-    color: '#D2691E',
+    color: theme.colors.primary,
   },
   removeButton: {
-    backgroundColor: '#DC143C',
-    padding: 8,
-    borderRadius: 6,
-    alignItems: 'center',
-    marginTop: 8,
+    backgroundColor: theme.colors.error,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: theme.borderRadius.sm,
   },
   removeButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: 'bold',
+    color: theme.colors.surface,
+    fontSize: theme.fontSizes.sm,
+    fontWeight: '600',
   },
 });

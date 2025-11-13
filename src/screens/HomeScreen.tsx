@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { MenuItem, COURSE_OPTIONS } from '../utils/types';
-import { calculateAveragePrice } from '../utils/menuUtils';
+import { MenuItem, COURSES } from '../utils/types';
+import { calculateAverage } from '../utils/calculations';
 import { MenuItemCard } from '../components/MenuItemCard';
+import { theme } from '../utils/theme';
+import { commonStyles } from '../utils/commonStyles';
 
 interface HomeScreenProps {
   menuItems: MenuItem[];
@@ -12,39 +14,44 @@ interface HomeScreenProps {
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ menuItems, onNavigateToManage, onNavigateToFilter }) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Chef Christoffel Menu</Text>
+    <View style={commonStyles.container}>
+      <View style={commonStyles.header}>
+        <Text style={commonStyles.headerTitle}>Chef Christoffel Menu</Text>
       </View>
       
-      <Text style={styles.title}>Complete Menu</Text>
-      <Text style={styles.subtitle}>Total Items: {menuItems.length}</Text>
+      <Text style={commonStyles.screenTitle}>Complete Menu</Text>
+      <Text style={commonStyles.subtitle}>Total Items: {menuItems.length}</Text>
 
-      <View style={styles.averageSection}>
-        <Text style={styles.averageTitle}>Average Prices by Course:</Text>
-        {COURSE_OPTIONS.map(course => (
-          <Text key={course} style={styles.averageText}>
-            {course}: R{calculateAveragePrice(menuItems, course).toFixed(2)}
-          </Text>
-        ))}
-        <Text style={styles.averageText}>
-          Overall: R{calculateAveragePrice(menuItems).toFixed(2)}
-        </Text>
+      <View style={[commonStyles.card, styles.priceCard]}>
+        <Text style={styles.sectionTitle}>Average Prices by Course</Text>
+        <View style={styles.priceGrid}>
+          {COURSES.map(course => (
+            <View key={course} style={styles.priceItem}>
+              <Text style={styles.courseLabel}>{course}</Text>
+              <Text style={styles.priceValue}>R{calculateAverage(menuItems, course).toFixed(2)}</Text>
+            </View>
+          ))}
+        </View>
+        <View style={styles.totalPrice}>
+          <Text style={styles.totalLabel}>Overall Average</Text>
+          <Text style={styles.totalValue}>R{calculateAverage(menuItems).toFixed(2)}</Text>
+        </View>
       </View>
 
       <FlatList
         data={menuItems}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <MenuItemCard item={item} />}
-        style={styles.list}
+        style={commonStyles.list}
+        showsVerticalScrollIndicator={false}
       />
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={onNavigateToManage}>
-          <Text style={styles.buttonText}>Manage Menu</Text>
+        <TouchableOpacity style={[commonStyles.primaryButton, styles.actionButton]} onPress={onNavigateToManage}>
+          <Text style={commonStyles.primaryButtonText}>Manage Menu</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={onNavigateToFilter}>
-          <Text style={styles.buttonText}>Filter Menu</Text>
+        <TouchableOpacity style={[commonStyles.primaryButton, styles.actionButton]} onPress={onNavigateToFilter}>
+          <Text style={commonStyles.primaryButtonText}>Filter Menu</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -52,78 +59,67 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ menuItems, onNavigateToM
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF8F0',
+  priceCard: {
+    marginBottom: theme.spacing.md,
   },
-  header: {
-    backgroundColor: '#D2691E',
-    padding: 20,
-    paddingTop: 50,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-  },
-  headerTitle: {
-    color: '#FFFFFF',
-    fontSize: 22,
+  sectionTitle: {
+    fontSize: theme.fontSizes.lg,
     fontWeight: 'bold',
+    color: theme.colors.secondary,
+    marginBottom: theme.spacing.md,
     textAlign: 'center',
   },
-  title: {
-    fontSize: 28,
+  priceGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: theme.spacing.md,
+  },
+  priceItem: {
+    width: '48%',
+    backgroundColor: theme.colors.background,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+    marginBottom: theme.spacing.sm,
+    alignItems: 'center',
+  },
+  courseLabel: {
+    fontSize: theme.fontSizes.sm,
+    color: theme.colors.textSecondary,
+    fontWeight: '500',
+    marginBottom: theme.spacing.xs,
+  },
+  priceValue: {
+    fontSize: theme.fontSizes.lg,
     fontWeight: 'bold',
-    color: '#8B4513',
-    marginBottom: 10,
-    textAlign: 'center',
-    marginTop: 20,
+    color: theme.colors.primary,
   },
-  subtitle: {
-    fontSize: 16,
-    marginBottom: 20,
-    color: '#A0522D',
-    textAlign: 'center',
+  totalPrice: {
+    backgroundColor: theme.colors.primary,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  totalLabel: {
+    fontSize: theme.fontSizes.md,
     fontWeight: '600',
+    color: theme.colors.surface,
   },
-  averageSection: {
-    backgroundColor: '#FFFFFF',
-    margin: 20,
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#F4A460',
-  },
-  averageTitle: {
-    fontSize: 18,
+  totalValue: {
+    fontSize: theme.fontSizes.xl,
     fontWeight: 'bold',
-    color: '#8B4513',
-    marginBottom: 8,
-  },
-  averageText: {
-    fontSize: 16,
-    color: '#D2691E',
-    marginBottom: 4,
-  },
-  list: {
-    flex: 1,
-    paddingHorizontal: 20,
+    color: theme.colors.surface,
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 20,
+    justifyContent: 'space-between',
+    paddingHorizontal: theme.spacing.lg,
+    paddingBottom: theme.spacing.lg,
   },
-  button: {
-    backgroundColor: '#D2691E',
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    flex: 0.45,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+  actionButton: {
+    flex: 0.48,
+    margin: 0,
   },
 });
